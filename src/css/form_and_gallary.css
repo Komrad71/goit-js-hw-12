@@ -53,6 +53,14 @@ button:hover {
   background: #6c8cff;
 }
 
+a {
+  width: 370px;
+}
+img {
+  height: 220px;
+  width: 370px;
+}
+
 .loader {
   display: none;
   text-align: center;
@@ -68,23 +76,44 @@ button:hover {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 24px 24px;
+  /* gap: 24px; */
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  padding: 20px;
+  max-width: 1200px;
+
 }
+
 
 .gallery_item {
+  display: flex;
   border: 1px solid #808080;
-}
-.gallery_image {
-  height: 250px;
+  /* box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out; */
 }
 
+.gallery_image {
+  height: 250px;
+    /* box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out; */
+}
+/* .gallery_image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px #808080;
+} */
+
 .info {
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-top: 1px solid #ddd;
   background-color: rgba(0, 0, 0, 0.6);
-  color: #fff;
-  gap: 28px;
+  /* color: #fff; */
+  gap: 20px;
+
 }
 
 .info-item {
@@ -92,3 +121,7 @@ button:hover {
   flex-direction: column;
 }
 
+
+.load-more {
+  margin: 30px auto;
+}

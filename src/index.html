@@ -3,23 +3,25 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home work № 11</title>
+    <title>Home work № 12</title>
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
-    <main>
+    <main class="container">
 
       <form class="form">
         <label>
         <input type="text" name="query" class="input" autocomplete="off" placeholder="Searching..." required/>
       </label>
-        <button type="submit">Search</button>
+        <button type="submit" class = "search-btn">Search</button>
       </form>
-  
-      <div class="loader"></div> 
-  
+
+      <div class="loader">Loading...</div> 
+
       <div class="gallery"></div>
-      
+
+      <button type="submit" class="load-more" style="display: none;">Load more</button>
+
     </main>
     <script type="module" src="./main.js"></script>
   </body>

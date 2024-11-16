@@ -1,44 +1,107 @@
+// Описаний у документації
+import SimpleLightbox from 'simplelightbox';
+// Додатковий імпорт стилів
+import 'simplelightbox/dist/simple-lightbox.min.css';
+// npm install simplelightbox
+
 // Імпортуємо функції
-import { fetchImages } from "./js/pixabay-api";
-import { renderGallery } from "./js/render-functions";
-import { showNoResultsMessage } from "./js/render-functions";
-import { clearGallery } from "./js/render-functions";
+import { fetchImages } from './js/pixabay-api';
+import { renderGallery } from './js/render-functions';
+import { showNotification } from './js/render-functions';
+import { smoothScroll } from './js/render-functions';
 
+let query = '';
+let page = 1;
+let totalHits = 0;
+
+const form = document.querySelector('.form');
+const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
 const loader = document.querySelector('.loader');
-const form = document.querySelector(".form");
 
-form.addEventListener("submit", async (event) => {
-   // Скасовуємо перезавантаження сторінки
-  event.preventDefault();
-
-  const searchQuery = event.target.elements.query.value.trim();
-  if (!searchQuery) {
-    return showError("Please enter your request");
-  }
-
-  clearGallery();
-  toggleLoader(true);
-
-  try {
-    const data = await fetchImages(searchQuery);
-    if (data.hits && data.hits.length) {
-      renderGallery(data.hits);
-    } else {
-      showNoResultsMessage();
-    }
-  } catch (error) {
-    console.error(error); // Виведення помилки в консоль
-    showError("Something went wrong. Please try again!");
-  } finally {
-    toggleLoader(false);
-  }
+const lightbox = new SimpleLightbox('.gallery a', {
+  captionsData: 'alt',
+  captionDelay: 250,
 });
 
-function showError(message) {
-  iziToast.error({ title: "Error", message });
+// Слухач події для форми
+form.addEventListener('submit', handleFormSubmit);
+
+loadMoreBtn.addEventListener('click', loadMoreImages);
+
+function handleFormSubmit(event) {
+  event.preventDefault();
+  query = event.currentTarget.elements.query.value.trim();
+
+  if (!query) return; // Якщо поле порожнє, нічого не робимо
+
+  resetSearch();
+  searchImages();
 }
 
-// Функція для відображення/приховування індикатора завантаження
-function toggleLoader(isVisible) {
-  loader.style.display = isVisible ? "block" : "none";
+function resetSearch() {
+  page = 1;
+  totalHits = 0;
+  gallery.innerHTML = ''; // Очищення галереї
+  loadMoreBtn.style.display = 'none';
+}
+
+// Завантаження наступної сторінки
+function loadMoreImages() {
+  page++;
+  searchImages();
+}
+
+async function searchImages() {
+  showLoader();
+
+  try {
+    const { hits: images, totalHits: total } = await fetchImages(query, page);
+
+    handleSearchResults(images, total);
+  } catch (error) {
+    showNotification('Failed to load images. Please try again later.');
+  } finally {
+    hideLoader();
+  }
+}
+
+// Обробка результатів пошуку
+function handleSearchResults(images, total) {
+  if (page === 1) {
+    totalHits = total;
+
+    if (!totalHits) {
+      showNotification(
+        'Sorry, there are no images matching your search query. Please try again!'
+      );
+      return;
+    }
+  }
+
+  renderGallery(images, gallery);
+  lightbox.refresh();
+
+  toggleLoadMoreButton(images);
+  if (page > 1) smoothScroll();
+}
+
+function toggleLoadMoreButton(images) {
+  const isMoreAvailable = images.length === 15 && page * 15 < totalHits;
+
+  loadMoreBtn.style.display = isMoreAvailable ? 'block' : 'none';
+
+  if (!isMoreAvailable && page * 15 >= totalHits) {
+    showNotification(
+      "We're sorry, but you've reached the end of search results."
+    );
+  }
+}
+
+function showLoader() {
+  loader.style.display = 'block';
+}
+
+function hideLoader() {
+  loader.style.display = 'none';
 }
