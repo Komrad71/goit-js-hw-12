@@ -1,0 +1,12 @@
+import{S as f,i as u}from"./assets/vendor-5ObWk2rO.js";(function(){const s=document.createElement("link").relList;if(s&&s.supports&&s.supports("modulepreload"))return;for(const r of document.querySelectorAll('link[rel="modulepreload"]'))a(r);new MutationObserver(r=>{for(const t of r)if(t.type==="childList")for(const n of t.addedNodes)n.tagName==="LINK"&&n.rel==="modulepreload"&&a(n)}).observe(document,{childList:!0,subtree:!0});function o(r){const t={};return r.integrity&&(t.integrity=r.integrity),r.referrerPolicy&&(t.referrerPolicy=r.referrerPolicy),r.crossOrigin==="use-credentials"?t.credentials="include":r.crossOrigin==="anonymous"?t.credentials="omit":t.credentials="same-origin",t}function a(r){if(r.ep)return;r.ep=!0;const t=o(r);fetch(r.href,t)}})();const d="https://pixabay.com/api/",m="47085214-4cff0ba1bb96c64321ec3a8d9";async function p(e,s=1,o=12){try{const a=new URLSearchParams({key:m,q:e,image_type:"photo",orientation:"horizontal",safesearch:"true",page:s,per_page:o}),r=await fetch(`${d}?${a.toString()}`);if(!r.ok)throw new Error("Failed to fetch images");return await r.json()}catch(a){throw console.error("Error fetching images:",a),a}}const l=document.querySelector(".gallery");function y(e){l.innerHTML=e.map(h).join(""),new f(".gallery a",{captionsData:"alt",captionDelay:250}).refresh()}function h(e){return`
+    <a href="${e.largeImageURL}" class="gallery_item">
+      <img src="${e.webformatURL}" alt="${e.tags}" class="gallery_image" width="380"/>
+      <div class="info">
+        <p class="info-item"><b>Likes:</b> ${e.likes}</p>
+        <p class="info-item"><b>Views:</b> ${e.views}</p>
+        <p class="info-item"><b>Comments:</b> ${e.comments}</p>
+        <p class="info-item"><b>Downloads:</b> ${e.downloads}</p>
+      </div>
+    </a>
+  `}function g(){u.error({title:"Error",message:"Sorry, there are no images matching your search query. Please try again!",position:"topRight"})}function b(){l.innerHTML=""}const w=document.querySelector(".loader"),L=document.querySelector(".form");L.addEventListener("submit",async e=>{e.preventDefault();const s=e.target.elements.query.value.trim();if(!s)return i("Please enter your request");b(),c(!0);try{const o=await p(s);o.hits&&o.hits.length?y(o.hits):g()}catch(o){console.error(o),i("Something went wrong. Please try again!")}finally{c(!1)}});function i(e){iziToast.error({title:"Error",message:e})}function c(e){w.style.display=e?"block":"none"}
+//# sourceMappingURL=index.js.map
